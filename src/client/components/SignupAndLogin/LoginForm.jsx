@@ -1,0 +1,79 @@
+'use strict'
+
+import debounce from 'lodash/debounce'
+import PropTypes from 'prop-types'
+import React from 'react'
+import { hot } from 'react-hot-loader'
+
+import { MForm, MInput } from '../Materials'
+
+/**
+ * Form for user to login. State is managed in and rendered in `SignupAndLogin/index.jsx`
+ *
+ * @param {*} props - contains `handleChange: () => void`, `handleSubmit: () => void`,
+ * and `user: SignupAndLoginState`
+ * @returns {*} ReactElement<any>
+ */
+const LoginForm = ({ handleChange, handleSubmit, user }) => {
+  const debouncedHandleChange = debounce(handleChange, 300)
+  const eventHandler = (value, key) =>
+    debouncedHandleChange(value, key)
+
+  return (
+        <MForm
+          args={[]}
+          // ! better way to tell user of invalid inputs
+          disableSubmit={!user.email || !user.password}
+          handleSubmit={handleSubmit}
+          name="Login"
+          redirect="/me"
+        >
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column'
+            }}
+          >
+            <MInput
+              args={['email']}
+              handleChange={eventHandler}
+              isRequired={true}
+              name="email" // ! messes up label
+              type="email"
+            />
+            <MInput
+              args={['password']}
+              handleChange={eventHandler}
+              isRequired={true}
+              name="password"
+              type="password"
+            />
+          </div>
+        </MForm>
+  )
+}
+
+LoginForm.defaultProps = {
+  handleChange: () => {},
+  handleSubmit: () => {},
+  user: {
+    confirmEmail: '',
+    confirmPassword: '',
+    email: '',
+    password: ''
+  }
+}
+
+LoginForm.PropTypes = {
+  handleChange: PropTypes.func,
+  handleSubmit: PropTypes.func,
+  user: PropTypes.shape({
+    confirmEmail: PropTypes.string,
+    confirmPassword: PropTypes.string,
+    email: PropTypes.string,
+    password: PropTypes.string
+  })
+}
+
+export default hot(module)(LoginForm)
+
