@@ -1,4 +1,3 @@
-import debounce from "lodash/debounce";
 import PropTypes from "prop-types";
 import React from "react";
 import { hot } from "react-hot-loader";
@@ -11,43 +10,38 @@ import { MForm, MInput } from "../Materials";
  * @param {*} props - `{ handleChange: (value: string, key: string) => void, handleSubmit: () => void, user: SignupAndLoginState }`
  * @returns {*} ReactElement<any>
  */
-const LoginForm = ({ handleChange, handleSubmit, user }) => {
-  const debouncedHandleChange = debounce(handleChange, 300);
-  const eventHandler = (value, key) => debouncedHandleChange(value, key);
-
-  return (
-    <MForm
-      args={[]}
-      // ! better way to tell user of invalid inputs
-      disableSubmit={!user.email || !user.password}
-      handleSubmit={handleSubmit}
-      name="Login"
-      redirect="/me"
+const LoginForm = ({ handleChange, handleSubmit, user }) => (
+  <MForm
+    args={[]}
+    // ! better way to tell user of invalid inputs
+    disableSubmit={!user.email || !user.password}
+    handleSubmit={handleSubmit}
+    name="Login"
+    redirect="/me"
+  >
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column"
+      }}
     >
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column"
-        }}
-      >
-        <MInput
-          args={["email"]}
-          handleChange={eventHandler}
-          isRequired
-          name="email" // ! messes up label
-          type="email"
-        />
-        <MInput
-          args={["password"]}
-          handleChange={eventHandler}
-          isRequired
-          name="password"
-          type="password"
-        />
-      </div>
-    </MForm>
-  );
-};
+      <MInput
+        args={["email"]}
+        handleChange={handleChange}
+        isRequired
+        name="email" // ! messes up label
+        type="email"
+      />
+      <MInput
+        args={["password"]}
+        handleChange={handleChange}
+        isRequired
+        name="password"
+        type="password"
+      />
+    </div>
+  </MForm>
+);
 
 LoginForm.defaultProps = {
   handleChange: () => {},

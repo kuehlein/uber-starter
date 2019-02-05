@@ -73,7 +73,8 @@ const prodConfig = {
           plugins: [
             "@babel/plugin-proposal-class-properties",
             "@babel/plugin-proposal-object-rest-spread",
-            "@babel/plugin-transform-runtime" // optimizes bundling by disabling babel bloat
+            "@babel/plugin-transform-runtime", // optimizes bundling by disabling babel bloat
+            "lodash" // avoids bundling unused lodash methods
           ]
         },
         test: /\.jsx?$/

@@ -53,7 +53,8 @@ const devConfig = {
           plugins: [
             "@babel/plugin-proposal-class-properties",
             "@babel/plugin-proposal-object-rest-spread",
-            "@babel/plugin-transform-runtime" // optimizes bundling by disabling babel bloat
+            "@babel/plugin-transform-runtime", // optimizes bundling by disabling babel bloat
+            "lodash" // avoids bundling unused lodash methods
           ]
         },
         test: /\.jsx?$/
@@ -71,11 +72,12 @@ const devConfig = {
   },
   output: {
     filename: "[name].[hash].bundle.js",
-    publicPath: "/"
+    publicPath: "/",
+    path: path.resolve(__dirname, "public", "dist")
   },
   plugins,
   resolve: {
-    extensions: [".js", ".jsx", "*"] // ! add loader for `.png`
+    extensions: [".js", ".jsx", "*"] // ! add loader for `.png` / `.svg`
   },
   target: "web"
 };

@@ -3,3 +3,4 @@
 export { default as MButton } from "./MButton";
 export { default as MForm } from "./MForm";
 export { default as MInput } from "./MInput";
+export { default as MLoadingSpinner } from "./MLoadingSpinner";

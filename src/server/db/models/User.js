@@ -120,7 +120,7 @@ User.encryptPassword = (plainText, salt) =>
  * Listens for when a user's password changes. The user's `password`
  * and `salt` are then updated.
  *
- * @param {*} user - `{ password: string, salt: string, ... }`
+ * @param {} user - `{ password: string, salt: string, ... }`
  */
 const setSaltAndPassword = user => {
   if (user.changed("password")) {

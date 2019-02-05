@@ -1,7 +1,7 @@
 // ! css modules
 import "./signupAndLogin.css";
 
-import cloneDeep from "lodash/cloneDeep";
+import _ from "lodash";
 import PropTypes from "prop-types";
 import React, { Component } from "react";
 
@@ -35,7 +35,7 @@ export default class SignupAndLogin extends Component {
 
   constructor(props) {
     super(props);
-    this.state = cloneDeep(this.baseState);
+    this.state = _.cloneDeep(this.baseState);
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -86,16 +86,14 @@ export default class SignupAndLogin extends Component {
 
   render() {
     const formType = this.props;
+    const Form = formType === "Signup" ? SignupForm : LoginForm;
 
-    return formType === "Signup" ? (
-      <SignupForm
-        handleChange={this.handleChange}
-        handleSubmit={this.handleSubmit}
-        user={this.state}
-      />
-    ) : (
-      <LoginForm
-        handleChange={this.handleChange}
+    const debouncedHandleChange = _.debounce(this.handleChange, 300);
+    const changeHandler = (value, key) => debouncedHandleChange(value, key);
+
+    return (
+      <Form
+        handleChange={changeHandler}
         handleSubmit={this.handleSubmit}
         user={this.state}
       />

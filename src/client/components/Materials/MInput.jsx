@@ -1,4 +1,4 @@
-import startCase from "lodash/startCase";
+import _ from "lodash";
 import PropTypes from "prop-types";
 import React from "react";
 
@@ -32,7 +32,7 @@ const MInput = ({
   type
   // value
 }) => {
-  const formattedName = startCase(name);
+  const formattedName = _.startCase(name);
 
   return (
     <label htmlFor="input">

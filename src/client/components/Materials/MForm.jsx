@@ -1,4 +1,4 @@
-import startCase from "lodash/startCase";
+import _ from "lodash";
 import PropTypes from "prop-types";
 import React from "react";
 
@@ -27,7 +27,7 @@ const MForm = ({
   return (
     <form className={`${styling}Form`}>
       <label htmlFor={name}>
-        <h2>{startCase(name)}</h2>
+        <h2>{_.startCase(name)}</h2>
       </label>
 
       {/* fields/inputs/etc. that Form will contain */}

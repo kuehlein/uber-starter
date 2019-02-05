@@ -35,6 +35,11 @@
     "import/no-extraneous-dependencies": ["warn", { "devDependencies": true }],
     "import/order": "off",
     "import/prefer-default-export": "off",
+    "jsx-a11y/label-has-for": "off",
+    "jsx-a11y/label-has-associated-control": [
+      2,
+      { "labelAttributes": ["label"], "depth": 3 }
+    ],
     "react/forbid-prop-types": [0],
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
     "react/sort-comp": [1],

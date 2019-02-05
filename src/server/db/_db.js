@@ -1,4 +1,4 @@
-import snakeCase from "lodash/snakeCase";
+import _ from "lodash";
 import Sequelize from "sequelize";
 
 import pkg from "../../../package.json";
@@ -8,7 +8,7 @@ import pkg from "../../../package.json";
  * For a testing enviornment, `"_test"` is appended to the database name.
  */
 const databaseName =
-  snakeCase(pkg.name) + (process.env.NODE_ENV === "test" ? "_test" : "");
+  _.snakeCase(pkg.name) + (process.env.NODE_ENV === "test" ? "_test" : "");
 
 /**
  * Instance of database connection.
