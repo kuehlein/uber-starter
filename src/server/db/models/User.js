@@ -1,21 +1,29 @@
-import {
-  IsDate,
-  IsEmail,
-  IsNotEmpty,
-  IsUrl
-} from "class-validator"
-import crypto from 'crypto'
-import Sequelize from 'sequelize'
+// import {
+//   IsDate,
+//   IsEmail,
+//   IsNotEmpty,
+//   IsUrl
+// } from "class-validator"
+import crypto from "crypto";
+import path from "path";
+import Sequelize from "sequelize";
 
-import db from '../_db'
+import db from "../_db";
 
-const defaultAvatar = path.resolve("public", "assets", "default-avatar.jpg")
+const defaultAvatar = path.resolve("public", "assets", "default-avatar.jpg");
 
 /**
  * User model. Contains fields for name, email, password and other user related information,
  * as well as methods for password encryption and verification.
  */
-const User = db.define('user', {
+const User = db.define("user", {
+  avatar: {
+    type: Sequelize.STRING,
+    // ! how this happen ?
+    default: {
+      value: defaultAvatar
+    }
+  },
   email: {
     type: Sequelize.STRING,
     unique: true,
@@ -29,16 +37,16 @@ const User = db.define('user', {
     allowNull: false,
     // Making `.password` act like a func hides it when serializing to JSON.
     // This is a hack to get around Sequelize's lack of a "private" option.
-    get: () => this.getDataValue('password'),
+    get: () => this.getDataValue("password")
   },
   salt: {
     type: Sequelize.STRING,
     allowNull: false,
     // Making `.salt` act like a function hides it when serializing to JSON.
     // This is a hack to get around Sequelize's lack of a "private" option.
-    get: () => this.getDataValue('salt')
+    get: () => this.getDataValue("salt")
   }
-})
+});
 
 /**
  * -----------------------------------------------------------------------------
@@ -56,21 +64,18 @@ const User = db.define('user', {
  * @returns {boolean}
  */
 User.prototype.isValidPassword = candidatePwd => {
-  const encryptedCandidate = User.encryptPassword(
-    candidatePwd,
-    this.salt
-  )
+  const encryptedCandidate = User.encryptPassword(candidatePwd, this.salt);
 
-  if (this.password.length !== encryptedCandidate.length) return false
+  if (this.password.length !== encryptedCandidate.length) return false;
 
-  let result = 0
+  let result = 0;
 
   for (let i = encryptedCandidate.length - 1; i >= 0; i--) {
-    result |= encryptedCandidate.charCodeAt(i) ^ this.password.charCodeAt(i)
+    result |= encryptedCandidate.charCodeAt(i) ^ this.password.charCodeAt(i);
   }
 
-  return result === 0
-}
+  return result === 0;
+};
 
 /**
  * -----------------------------------------------------------------------------
@@ -85,7 +90,7 @@ User.prototype.isValidPassword = candidatePwd => {
  *
  * @returns {string}
  */
-User.generateSalt = () => crypto.randomBytes(16).toString('base64')
+User.generateSalt = () => crypto.randomBytes(16).toString("base64");
 
 /**
  * *Class Method*
@@ -98,10 +103,10 @@ User.generateSalt = () => crypto.randomBytes(16).toString('base64')
  */
 User.encryptPassword = (plainText, salt) =>
   crypto
-    .createHash('RSA-SHA256')
+    .createHash("RSA-SHA256")
     .update(plainText)
     .update(salt)
-    .digest('hex')
+    .digest("hex");
 
 /**
  * -----------------------------------------------------------------------------
@@ -115,16 +120,16 @@ User.encryptPassword = (plainText, salt) =>
  * Listens for when a user's password changes. The user's `password`
  * and `salt` are then updated.
  *
- * @param {*} user - `{ password: string, salt: string }`
+ * @param {*} user - `{ password: string, salt: string, ... }`
  */
 const setSaltAndPassword = user => {
-  if (user.changed('password')) {
-    user.salt = User.generateSalt()
-    user.password = User.encryptPassword(user.password(), user.salt())
+  if (user.changed("password")) {
+    user.salt = User.generateSalt();
+    user.password = User.encryptPassword(user.password(), user.salt());
   }
-}
+};
 
-User.beforeCreate(setSaltAndPassword)
-User.beforeUpdate(setSaltAndPassword)
+User.beforeCreate(setSaltAndPassword);
+User.beforeUpdate(setSaltAndPassword);
 
-export default User
+export default User;

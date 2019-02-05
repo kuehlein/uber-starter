@@ -1,17 +1,15 @@
-'use strict'
-
-import {instanceOf} from 'prop-types'
-import React, { Component } from 'react'
-import { Cookies, withCookies } from 'react-cookie'
-import { withRouter } from 'react-router-dom'
-
 // ! css modules
-import './app.css'
+import "./app.css";
 
-import Footer from './Footer'
-import Main from './Main'
-import Navbar from './Navbar'
-import Routes from './Routes'
+import { instanceOf } from "prop-types";
+import React, { Component } from "react";
+import { Cookies, withCookies } from "react-cookie";
+import { withRouter } from "react-router-dom";
+
+import Footer from "./Footer";
+import Main from "./Main";
+import Navbar from "./Navbar";
+import Routes from "./Routes";
 
 // If you use React Router, make this component
 // render <Router> with your routes. Currently,
@@ -30,31 +28,16 @@ import Routes from './Routes'
 class App extends Component {
   static propTypes = {
     cookies: instanceOf(Cookies).isRequired
-  }
+  };
 
   constructor(props) {
-    super(props)
-    const { cookies } = this.props
+    super(props);
+    const { cookies } = this.props;
 
     this.state = {
-      userCookie: cookies.get('connect.sid') || ''
-    }
-    this.handleLogout = this.handleLogout.bind(this)
-  }
-
-  render() {
-    const { userCookie } = this.state
-
-    return (
-      <div>
-        <Navbar handleLogout={this.handleLogout} userCookie={userCookie} />
-        <hr />
-        <Main>
-          <Routes userCookie={userCookie} />
-        </Main>
-        <Footer />
-      </div>
-    )
+      userCookie: cookies.get("connect.sid") || ""
+    };
+    this.handleLogout = this.handleLogout.bind(this);
   }
 
   /**
@@ -65,6 +48,21 @@ class App extends Component {
   handleLogout(client) {
     // ! new approach
   }
+
+  render() {
+    const { userCookie } = this.state;
+
+    return (
+      <div>
+        <Navbar handleLogout={this.handleLogout} userCookie={userCookie} />
+        <hr />
+        <Main>
+          <Routes userCookie={userCookie} />
+        </Main>
+        <Footer />
+      </div>
+    );
+  }
 }
 
-export default withCookies(withRouter(App))
+export default withCookies(withRouter(App));

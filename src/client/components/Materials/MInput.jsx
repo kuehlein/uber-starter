@@ -1,11 +1,9 @@
-'use strict'
-
-import startCase from 'lodash/startCase';
-import PropTypes from 'prop-types';
-import React from 'react';
+import startCase from "lodash/startCase";
+import PropTypes from "prop-types";
+import React from "react";
 
 // ! css modules
-const materials = require('./materials.css');
+const materials = require("./materials.css");
 
 /**
  * Template for inputs. Supports handling changes with prop `handleClick`
@@ -14,28 +12,24 @@ const materials = require('./materials.css');
  * prop `name` for the name of the input, as well as most other input
  * functionality. See @param for a full list.
  *
- * @param {*} props - contains `args: any[]`, `autoComplete: boolean`,
- * `autoCorrect: boolean`, `autoFocus: boolean`, `handleChange: (...args[]) => void`,
- * `isDisabled: boolean`, `isReadOnly: boolean`, `isRequired: boolean`,
- * `maxLength: number`, `name: string`, `placeholder: string`, `shouldSpellCheck: boolean`,
- * `styling: string` and `type: string`
+ * @param {*} props - `{ args: any[], autoComplete: boolean, autoCorrect: boolean, autoFocus: boolean, handleChange: (...args[]) => void, isDisabled: boolean, isReadOnly: boolean, isRequired: boolean, maxLength: number, name: string, placeholder: string, shouldSpellCheck: boolean, styling: string, type: string }`
  * @returns {*} ReactElement<any>
  */
 const MInput = ({
   args,
   autoComplete,
   autoCorrect,
-  autoFocus,
   handleChange,
   isDisabled,
   isReadOnly,
   isRequired,
   maxLength,
+  minLength,
   name,
   placeholder,
   shouldSpellcheck,
   styling,
-  type,
+  type
   // value
 }) => {
   const formattedName = startCase(name);
@@ -46,10 +40,10 @@ const MInput = ({
       <input
         autoComplete={autoComplete}
         autoCorrect={autoCorrect}
-        autoFocus={autoFocus}
-        className={materials[`${styling}-input`]}
+        className={materials[`${styling}Input`]}
         disabled={isDisabled}
         maxLength={maxLength}
+        minLength={minLength}
         name={name}
         onChange={event => handleChange(event.target.value, ...args)}
         placeholder={placeholder || formattedName}
@@ -65,38 +59,61 @@ const MInput = ({
 
 MInput.defaultProps = {
   args: [],
-  autoComplete: 'off',
-  autoCorrect: 'off',
-  autoFocus: false,
+  autoComplete: "off",
+  autoCorrect: "off",
   handleChange: () => {},
   isDisabled: false,
   isReadOnly: false,
   isRequired: false,
   maxLength: Infinity,
-  name: '',
-  placeholder: '',
+  minLength: 0,
+  name: "",
+  placeholder: "",
   shouldSpellcheck: false,
-  styling: 'std',
-  type: 'text',
+  styling: "std",
+  type: "text"
   // value: ''
 };
 
-MInput.PropTypes = {
+MInput.propTypes = {
   args: PropTypes.array(PropTypes.any),
-  autoComplete: PropTypes.string,
-  autoCorrect: PropTypes.string,
-  autoFocus: PropTypes.bool,
+  autoComplete: PropTypes.oneOf(["off", "on"]),
+  autoCorrect: PropTypes.oneOf(["off", "on"]),
   handleChange: PropTypes.func,
   isDisabled: PropTypes.bool,
   isReadOnly: PropTypes.bool,
   isRequired: PropTypes.bool,
   maxLength: PropTypes.number,
+  minLength: PropTypes.number,
   name: PropTypes.string,
   placeholder: PropTypes.string,
   shouldSpellcheck: PropTypes.bool,
-  styling: PropTypes.string,
-  type: PropTypes.string,
+  styling: PropTypes.oneOf(["std"]), // ! Add more when start to style
+  type: PropTypes.oneOf([
+    "button",
+    "checkbox",
+    "color",
+    "date",
+    "datetime-local",
+    "email",
+    "file",
+    "hidden",
+    "image",
+    "month",
+    "number",
+    "password",
+    "radio",
+    "range",
+    "reset",
+    "search",
+    "submit",
+    "tel",
+    "text",
+    "time",
+    "url",
+    "week"
+  ])
   // value: PropTypes.string
-}
+};
 
 export default MInput;

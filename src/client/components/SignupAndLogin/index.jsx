@@ -1,49 +1,93 @@
-'use strict'
-
-import cloneDeep from 'lodash/cloneDeep'
-import React, { Component } from 'react'
-
 // ! css modules
-import './signupAndLogin.css'
+import "./signupAndLogin.css";
 
-import { encryptReqData } from '../utils'
-import LoginForm from './LoginForm'
-import SignupForm from './SignupForm'
+import cloneDeep from "lodash/cloneDeep";
+import PropTypes from "prop-types";
+import React, { Component } from "react";
+
+import { encryptReqData } from "../utils";
+import LoginForm from "./LoginForm";
+import SignupForm from "./SignupForm";
 
 /**
  * The root of the `SignupAndLogin` form. Contains the logic to
  * manage the react state / submit the form.
  *
- * @param {*} props - contains `cookies: Cookie`
+ * @param {*} props - `{ formType: "Signup" | "Login }`
  * @returns {*} ReactElement<any>
  */
 export default class SignupAndLogin extends Component {
   // `Signup` form is displayed by default.
   static defaultProps = {
-    formType: 'Signup'
-  }
+    formType: "Signup"
+  };
 
   /**
    * Preserve the initial state in a new object. Use this to reset
    * the form's state if `this.props.formType` changes`.
    */
   baseState = {
-    confirmEmail: '',
-    confirmPassword: '',
-    email: '',
-    password: ''
-  }
+    confirmEmail: "",
+    confirmPassword: "",
+    email: "",
+    password: ""
+  };
 
   constructor(props) {
-    super(props)
-    this.state = cloneDeep(this.baseState)
+    super(props);
+    this.state = cloneDeep(this.baseState);
 
-    this.handleChange = this.handleChange.bind(this)
-    this.handleSubmit = this.handleSubmit.bind(this)
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  /**
+   * If `this.props.formType` changes, reset the state of the form.
+   *
+   * @param {*} nextProps - `{ formtype: string }`
+   */
+  componentWillReceiveProps(nextProps) {
+    const { formType } = this.props;
+
+    if (formType !== nextProps.formType) {
+      this.setState(this.baseState);
+    }
+  }
+
+  /**
+   * Updates the react state with a given input and a given value.
+   *
+   * @param {string} value - the new value of this piece of SignupAndLogin state
+   * @param {string} key   - part of SignupAndLogin state being updated
+   */
+  handleChange(value, key) {
+    this.setState({ [key]: value });
+  }
+
+  /**
+   * Either logs-in a user or signs-up a new user, depending on the
+   * given props to this component either `Signup` or `Login`.
+   *
+   * @param {*} signup - // ! will probably be changed
+   */
+  handleSubmit(signup) {
+    const { email, password } = this.state;
+
+    const user = {
+      email: encryptReqData(email),
+      password: encryptReqData(password)
+    };
+
+    // ! previously apollo --- need a new way to signup and login
+
+    // ! since fields arent controlled, they arent being cleared
+    this.setState(this.baseState);
   }
 
   render() {
-    return this.props.formType === 'Signup' ? (
+    const formType = this.props;
+
+    return formType === "Signup" ? (
       <SignupForm
         handleChange={this.handleChange}
         handleSubmit={this.handleSubmit}
@@ -55,55 +99,13 @@ export default class SignupAndLogin extends Component {
         handleSubmit={this.handleSubmit}
         user={this.state}
       />
-    )
-  }
-
-  /**
-   * If `this.props.formType` changes, reset the state of the form.
-   *
-   * @param {*} nextProps - `{ formtype: string }`
-   */
-  componentWillReceiveProps(nextProps) {
-    if (this.props.formType !== nextProps.formType) {
-      this.setState(this.baseState)
-    }
-  }
-
-  /**
-   * Updates the react state with a given input and a given value.
-   *
-   * @param {string} value - the new value of this piece of SignupAndLogin state
-   * @param {string} key   - part of SignupAndLogin state being updated
-   */
-  handleChange(value, key) {
-    this.setState({ [key]: value })
-  }
-
-  /**
-   * Either logs-in a user or signs-up a new user, depending on the
-   * given props to this component either `Signup` or `Login`.
-   *
-   * @param {*} signup - not sure yet
-   */
-  handleSubmit(
-    signup // ! will probably be changed
-  ) {
-    const user = {
-      email: this.state.email,
-      password: this.state.password
-    }
-
-    // ! previously apollo
-    if (signup) {
-      // ! need a new way to signup
-    } else {
-      // ! need a new way to login
-    }
-
-    // ! since fields arent controlled, they arent being cleared
-    this.setState(this.baseState)
+    );
   }
 }
+
+SignupAndLogin.propTypes = {
+  formType: PropTypes.oneOf(["Signup", "Login"])
+};
 
 /**
  * ! ---CONTROL FLOW---
@@ -130,4 +132,3 @@ export default class SignupAndLogin extends Component {
  *         + user is told that either email or password invalid
  *
  */
-

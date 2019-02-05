@@ -1,11 +1,9 @@
-'use strict'
+import PropTypes from "prop-types";
+import React from "react";
+import { Link } from "react-router-dom";
 
-import PropTypes from 'prop-types'
-import React from 'react'
-import { Link } from 'react-router-dom'
-
-import logo from '../../../../public/assets/Uber-logo.png'
-import { MButton } from '../Materials'
+import logo from "../../../../public/assets/Uber-logo.png";
+import { MButton } from "../Materials";
 
 /**
  * Navbar. Rendered at the top of the main `App` component. Receives `userCookie`
@@ -22,36 +20,36 @@ const Navbar = ({ handleLogout, userCookie }) => (
     {!userCookie ? (
       <div>
         <MButton
-          disabled={window.location.pathname === '/signup'}
+          disabled={window.location.pathname === "/signup"}
           name="Signup"
           redirect="signup"
         />
         <MButton
-          disabled={window.location.pathname === '/login'}
+          disabled={window.location.pathname === "/login"}
           name="Login"
           redirect="login"
         />
       </div>
     ) : (
       /* this was previously apollo */
-          <MButton
-            args={[]} // ! used to be client for apollo
-            handleClick={handleLogout}
-            name="Logout"
-            redirect="/"
-          />
+      <MButton
+        args={[]} // ! used to be client for apollo
+        handleClick={handleLogout}
+        name="Logout"
+        redirect="/"
+      />
     )}
   </div>
-)
+);
 
 Navbar.defaultProps = {
   handleLogout: () => {},
-  userCookie: ''
-}
+  userCookie: ""
+};
 
-Navbar.PropTypes = {
+Navbar.propTypes = {
   handleLogout: PropTypes.func,
   userCookie: PropTypes.string
-}
+};
 
-export default Navbar
+export default Navbar;

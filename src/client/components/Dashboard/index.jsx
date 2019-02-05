@@ -1,6 +1,4 @@
-'use strict'
-
-import React from 'react'
+import React from "react";
 
 /**
  * A user's main page. Rendered upon visiting `'/me'`. This view is only
@@ -12,6 +10,6 @@ const Dashboard = () => (
   <div>
     <h2>Dashboard page</h2>
   </div>
-)
+);
 
-export default Dashboard
+export default Dashboard;

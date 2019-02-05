@@ -1,6 +1,4 @@
-'use strict'
-
-import React from 'react'
+import React from "react";
 
 /**
  * Component for page footer. Rendered at bottom of main `App` component.
@@ -12,6 +10,6 @@ const Footer = () => (
     <hr />
     <h2>Footer</h2>
   </div>
-)
+);
 
-export default Footer
+export default Footer;

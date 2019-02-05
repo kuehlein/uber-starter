@@ -1,7 +1,5 @@
-'use strict'
-
-import React, { Component } from 'react'
-import { hot } from 'react-hot-loader'
+import React, { Component } from "react";
+import { hot } from "react-hot-loader";
 
 /**
  * Landing page of application. This is the view a user would see upon
@@ -11,25 +9,30 @@ import { hot } from 'react-hot-loader'
  */
 class Landing extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       count: 0
-    }
+    };
   }
 
   render() {
+    const { count } = this.state;
+
     return (
-      <div style={{ backgroundColor: 'red' }}>
+      <div style={{ backgroundColor: "red" }}>
         <h2>Landing page</h2>
-        <h3>{this.state.count}</h3>
+        <h3>{count}</h3>
         <hr />
         <hr />
-        <button onClick={() => this.setState({ count: this.state.count + 1 })}>
+        <button
+          type="button"
+          onClick={() => this.setState({ count: count + 1 })}
+        >
           + 1
         </button>
       </div>
-    )
+    );
   }
 }
 
-export default hot(module)(Landing)
+export default hot(module)(Landing);

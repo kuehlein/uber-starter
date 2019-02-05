@@ -1,10 +1,8 @@
-'use strict'
+import PropTypes from "prop-types";
+import React from "react";
+import { Route, Switch } from "react-router-dom";
 
-import PropTypes from 'prop-types'
-import React from 'react'
-import { Route, Switch } from 'react-router-dom'
-
-import { Dashboard, Landing, SignupAndLogin } from '../'
+import { Dashboard, Landing, SignupAndLogin } from "..";
 
 /**
  * Client-Side Routing (CSR) component. Index of various routes in the app.
@@ -16,7 +14,7 @@ import { Dashboard, Landing, SignupAndLogin } from '../'
 const Routes = ({ userCookie }) => (
   <Switch>
     {/* Routes placed here are available to all visitors */}
-    <Route exact={true} path="/" component={Landing} />
+    <Route exact path="/" component={Landing} />
     {userCookie && (
       <Switch>
         {/* Routes placed here are only available after logging in */}
@@ -27,14 +25,14 @@ const Routes = ({ userCookie }) => (
     <Route path="/login" render={() => <SignupAndLogin formType="Login" />} />
     <Route path="/signup" render={() => <SignupAndLogin formType="Signup" />} />
   </Switch>
-)
+);
 
 Routes.defaultProps = {
-  userCookie: ''
-}
+  userCookie: ""
+};
 
-Routes.PropTypes = {
+Routes.propTypes = {
   userCookie: PropTypes.string
-}
+};
 
-export default Routes
+export default Routes;

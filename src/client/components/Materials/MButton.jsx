@@ -1,11 +1,10 @@
-'use strict'
+/* eslint-disable react/button-has-type */
 
-import PropTypes from 'prop-types';
-import React from 'react';
+import PropTypes from "prop-types";
+import React from "react";
 
 // ! css modules
-
-import history from '../../history';
+import history from "../../history";
 
 /**
  * Template for buttons. Supports redirecting pages with prop `redirect`,
@@ -13,9 +12,7 @@ import history from '../../history';
  * adding classes with prop `styling` (defaults to `.stdButton`), as well as
  * prop `type` for button type and prop `name` for the name of the button.
  *
- * @param {*} props - contains `args: any[]`, `disabled: boolean`,
- * `handleClick: (...args[]) => void`, `name: string`, `redirect: string`,
- * `styling: string` and `type: string`
+ * @param {*} props - `{ args: any[], disabled: boolean, handleClick: (...args[]) => void, name: string, redirect: string, styling: string, type: string }`
  * @returns {*} ReactElement<any>
  */
 const MButton = ({
@@ -25,14 +22,16 @@ const MButton = ({
   name,
   redirect,
   styling,
-  type
+  type = "button"
 }) => (
   <button
     className={`${styling}Button`}
     disabled={disabled}
     onClick={async () => {
       await handleClick(...args);
-      if (redirect) history.push(redirect);
+      if (redirect) {
+        history.push(redirect);
+      }
     }}
     type={type}
     value={name}
@@ -45,19 +44,20 @@ MButton.defaultProps = {
   args: [],
   disabled: false,
   handleClick: () => {},
-  name: '',
-  styling: 'std',
-  type: 'button'
+  name: "",
+  redirect: "", // ! defaults to empty string: falsy value will not redirect
+  styling: "std",
+  type: "button"
 };
 
-MButton.PropTypes = {
+MButton.propTypes = {
   args: PropTypes.array(PropTypes.any),
   disabled: PropTypes.bool,
   handleClick: PropTypes.func,
   name: PropTypes.string,
-  styling: PropTypes.string,
-  type: PropTypes.string
-}
+  redirect: PropTypes.string,
+  styling: PropTypes.oneOf(["std"]), // ! Add more when start to style
+  type: PropTypes.oneOf(["button", "submit", "reset"])
+};
 
 export default MButton;
-

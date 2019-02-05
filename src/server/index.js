@@ -1,17 +1,21 @@
-'use strict'
+import Server from "./server";
 
-import path from 'path'
+const server = new Server();
 
-import Server from './server'
-
-const app = new Server()
-
-if (process.env.NODE_ENV !== 'production') {
-  require(path.resolve(__dirname, '..', '..', 'secrets.js'))
+// ! do I even need this now?
+if (process.env.NODE_ENV !== "production") {
+  /* eslint-disable-next-line global-require */
+  require("../../secrets.js");
 }
 
-// this evaluates to true when executed from the command line
-// creates an instance of the server for either development or production
-require.main === module ? app.createAppDev() : app.createAppProd()
+/**
+ * This evaluates to true when executed from the command line and
+ * creates an instance of the server for either development or production
+ */
+if (require.main === module) {
+  server.createAppDev();
+} else {
+  server.createAppProd();
+}
 
-export default app
+export default server;

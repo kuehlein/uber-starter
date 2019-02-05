@@ -1,26 +1,20 @@
-'use strict'
+import debounce from "lodash/debounce";
+import PropTypes from "prop-types";
+import React from "react";
 
-import debounce from 'lodash/debounce'
-import PropTypes from 'prop-types'
-import React from 'react'
-
-import { isValid } from '../../../utils'
-import { MForm, MInput } from '../Materials'
-import { isFormValid } from './utils'
+import { isValid } from "../../../utils";
+import { MForm, MInput } from "../Materials";
+import { isFormValid } from "./utils";
 
 /**
  * Form for user to signup. State is managed in and rendered in `SignupAndLogin/index.jsx`
  *
- * @param {*} props - contains `handleChange: () => void`, `handleSubmit: () => void`,
- * and `user: SignupAndLoginState`
+ * @param {*} props - `{ handleChange: () => void, handleSubmit: () => void, user: SignupAndLoginState }`
  * @returns {*} ReactElement<any>
  */
-// ! why is this rule being tripped?
-/* eslint-disable complexity */
 const SignupForm = ({ handleChange, handleSubmit, user }) => {
-  const debouncedHandleChange = debounce(handleChange, 300)
-  const eventHandler = (value, key) =>
-    debouncedHandleChange(value, key)
+  const debouncedHandleChange = debounce(handleChange, 300);
+  const eventHandler = (value, key) => debouncedHandleChange(value, key);
 
   return (
     <MForm
@@ -30,68 +24,66 @@ const SignupForm = ({ handleChange, handleSubmit, user }) => {
       name="Signup"
       redirect="/me"
     >
-      <div style={{ display: 'flex', flexDirection: 'row' }}>
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
+      <div style={{ display: "flex", flexDirection: "row" }}>
+        <div style={{ display: "flex", flexDirection: "column" }}>
           <MInput
-            args={['email']}
+            args={["email"]}
             handleChange={eventHandler}
-            isRequired={true}
+            isRequired
             name="email"
             styling={
-              isValid.email(user.email) || !user.email ? 'std' : 'invalid'
+              isValid.email(user.email) || !user.email ? "std" : "invalid"
             }
             type="email"
           />
           <MInput
-            args={['password']}
+            args={["password"]}
             handleChange={eventHandler}
-            isRequired={true}
+            isRequired
             name="password"
             styling={
               isValid.password(user.password) || !user.password
-                ? 'std'
-                : 'invalid'
+                ? "std"
+                : "invalid"
             }
             type="password"
           />
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <div style={{ display: "flex", flexDirection: "column" }}>
           <MInput
-            args={['confirmEmail']}
+            args={["confirmEmail"]}
             handleChange={eventHandler}
-            isRequired={true}
+            isRequired
             name="confirmEmail"
-            style={user.email === user.confirmEmail ? 'std' : 'invalid'}
+            style={user.email === user.confirmEmail ? "std" : "invalid"}
             type="email"
           />
           <MInput
-            args={['confirmPassword']}
+            args={["confirmPassword"]}
             handleChange={eventHandler}
-            isRequired={true}
+            isRequired
             name="confirmPassword" // ! password
-            styling={
-              user.password === user.confirmPassword ? 'std' : 'invalid'
-            }
+            styling={user.password === user.confirmPassword ? "std" : "invalid"}
             type="password"
           />
         </div>
       </div>
     </MForm>
-  )
-}
+  );
+};
 
 SignupForm.defaultProps = {
   handleChange: () => {},
   handleSubmit: () => {},
   user: {
-    confirmEmail: '',
-    confirmPassword: '',
-    email: '',
-    password: ''
+    confirmEmail: "",
+    confirmPassword: "",
+    email: "",
+    password: ""
   }
-}
+};
 
-SignupForm.PropTypes = {
+SignupForm.propTypes = {
   handleChange: PropTypes.func,
   handleSubmit: PropTypes.func,
   user: PropTypes.shape({
@@ -100,7 +92,6 @@ SignupForm.PropTypes = {
     email: PropTypes.string,
     password: PropTypes.string
   })
-}
+};
 
-export default SignupForm
-
+export default SignupForm;
