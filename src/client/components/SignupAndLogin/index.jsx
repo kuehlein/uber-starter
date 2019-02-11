@@ -85,7 +85,7 @@ export default class SignupAndLogin extends Component {
   }
 
   render() {
-    const formType = this.props;
+    const { formType } = this.props;
     const Form = formType === "Signup" ? SignupForm : LoginForm;
 
     const debouncedHandleChange = _.debounce(this.handleChange, 300);

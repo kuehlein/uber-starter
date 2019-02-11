@@ -1,15 +1,18 @@
 import ExtractCssChunks from "extract-css-chunks-webpack-plugin";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import path from "path";
-import { HotModuleReplacementPlugin } from "webpack";
+import webpack from "webpack";
+
+// ! alternative for this?
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
 // repeated config settings / paths
 const exclude = /node_modules/;
-const include = path.resolve(__dirname, "src", "client", "index.jsx");
+const include = path.resolve(__dirname, "src", "client"); // ! , "index.jsx");
 
 // development plugins
 const plugins = [
-  new HotModuleReplacementPlugin(),
+  new webpack.HotModuleReplacementPlugin(),
   new ExtractCssChunks({
     chunkFilename: "[id].[hash].css",
     cssModules: true,
@@ -45,17 +48,31 @@ const devConfig = {
         test: /\.css$/
       },
       {
+        test: /\.(jpg|png|gif|svg)$/,
+        use: [
+          {
+            loader: "file-loader",
+            options: {
+              name: "[name].[ext]",
+              outputPath: "./public/assets/media/",
+              publicPath: "./public/assets/media/"
+            }
+          }
+        ]
+      },
+      {
         exclude,
         include,
         loaders: "babel-loader",
         options: {
-          presets: ["@babel/preset-env"],
           plugins: [
             "@babel/plugin-proposal-class-properties",
             "@babel/plugin-proposal-object-rest-spread",
+            "@babel/plugin-syntax-dynamic-import",
             "@babel/plugin-transform-runtime", // optimizes bundling by disabling babel bloat
             "lodash" // avoids bundling unused lodash methods
-          ]
+          ],
+          presets: ["@babel/preset-env", "@babel/preset-react"]
         },
         test: /\.jsx?$/
       },
@@ -72,12 +89,12 @@ const devConfig = {
   },
   output: {
     filename: "[name].[hash].bundle.js",
-    publicPath: "/",
-    path: path.resolve(__dirname, "public", "dist")
+    path: path.resolve(__dirname, "public", "dist"),
+    publicPath: "/"
   },
   plugins,
   resolve: {
-    extensions: [".js", ".jsx", "*"] // ! add loader for `.png` / `.svg`
+    extensions: [".js", ".jsx", ".jpg", ".png", ".gif", ".svg", "*"]
   },
   target: "web"
 };

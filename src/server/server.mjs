@@ -11,6 +11,7 @@ import session from "express-session";
 import fs from "fs";
 import http from "http";
 import https from "https";
+import _ from "lodash";
 import morgan from "morgan";
 import passport from "passport";
 import path from "path";
@@ -18,46 +19,68 @@ import webpack from "webpack";
 import webpackDevMiddleware from "webpack-dev-middleware";
 import webpackHotMiddleware from "webpack-hot-middleware";
 
+import pkg from "../../package.json";
 import config from "../../webpack.dev.config";
-import { User } from "./db";
+import db from "./_db";
+import { User } from "./models";
 import { prettyLogger } from "./utils";
+
+// ! alternative for this?
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
+// ! alternative for this?
 
 /**
  * Contains the logic for running the server in both development and production.
  * Instantiated in `server/index`.
  */
 export default class Server {
-  static configurations = {
-    // Note: You may need sudo to run on port 443
-    development: { ssl: false, port: 3000, hostname: "localhost" },
-    production: { ssl: true, port: 443, hostname: "example.com" }
-  };
-
   /**
    *
+   * @param config
    */
-  NODE_ENV = process.env.NODE_ENV || "production";
+  static configurations(env) {
+    const configurationOptions = {
+      // Note: You may need sudo to run on port 443
+      development: { hostname: "localhost", port: 3000, ssl: false },
+      production: { hostname: "example.com", port: 443, ssl: true }
+    };
 
-  /**
-   *
-   */
-  SECRET =
-    process.env.SESSION_SECRET ||
-    "Peeps. Stand up to hard ware and step into style.";
-
-  /**
-   * If `enabled`, Hot Module Replacement is active. Enable *FOR DEVELOPMENT ONLY*
-   */
-  HMR = process.env.HMR === "enabled" ? "enabled" : "disabled";
+    return configurationOptions[env];
+  }
 
   constructor() {
+    /**
+     *
+     */
+    this.NODE_ENV = process.env.NODE_ENV || "production";
+
+    /**
+     * Uses the package name described in `package.json` as a database name.
+     * For a testing enviornment, `"_test"` is appended to the database name.
+     */
+    this.DB_NAME =
+      this.NODE_ENV === "test"
+        ? `${_.snakeCase(pkg.name)}_test`
+        : _.snakeCase(pkg.name);
+
+    /**
+     *
+     */
+    this.SECRET =
+      process.env.SESSION_SECRET ||
+      "Peeps. Stand up to hard ware and step into style.";
+
+    /**
+     * If `enabled`, Hot Module Replacement is active. Enable *FOR DEVELOPMENT ONLY*
+     */
+    this.HMR = process.env.HMR === "enabled" ? "enabled" : "disabled";
+
     this.app = express();
-    this.config = this.configurations[this.NODE_ENV];
+    this.config = Server.configurations(this.NODE_ENV);
 
     // Create the HTTPS or HTTP server, per configuration
     this.server = this.config.ssl
-      ? // Assumes certificates are in .ssl folder from package root.
-        // Make sure the files are secured.
+      ? // Make sure the files are secured.
         https.createServer(
           {
             cert: fs.readFileSync(
@@ -78,10 +101,10 @@ export default class Server {
    */
   createAppDev() {
     this.syncDb()
-      .then(dbConnection => this.applyMiddleware(dbConnection))
+      .then(dbConnection => this.appServer(dbConnection))
       .then(() => this.startListening())
       .then(() => this.HMR === "enabled" && this.webpackDevMiddleware())
-      .then(() => this.staticallyServeFiles())
+      .then(() => this.webServer())
       .catch(err => console.log(err));
   }
 
@@ -90,8 +113,8 @@ export default class Server {
    */
   createAppProd() {
     this.syncDb()
-      .then(dbConnection => this.applyMiddleware(dbConnection))
-      .then(() => this.staticallyServeFiles())
+      .then(dbConnection => this.appServer(dbConnection))
+      .then(() => this.webServer())
       .catch(err => console.log(err));
   }
 
@@ -99,12 +122,7 @@ export default class Server {
    * Syncs the database to begin the creation of the server.
    */
   async syncDb() {
-    // ! use sequelize equivalent
-    const dbConnection = getConnection();
-    if (dbConnection.isConnected === false) {
-      await dbConnection.connect().catch(err => console.log(err));
-    }
-    return dbConnection;
+    return db.authenticate();
   }
 
   /**
@@ -113,7 +131,7 @@ export default class Server {
    * compression middleware (`compression`), as well as
    * session, passport, auth and the api are applied here.
    */
-  applyMiddleware(dbConnection) {
+  appServer(dbConnection) {
     this.app.use((req, res, next) => {
       res.set({
         "Access-Control-Allow-Credentials": "same-origin",
@@ -159,11 +177,9 @@ export default class Server {
         secret: this.SECRET,
         store: new (SessionStore(session))({
           conObject: {
-            database: "uber_starter",
+            database: this.DB_NAME,
             host: this.config.host,
-            password: "password",
-            port: 5432,
-            user: "kyleuehlein" // ! ------
+            port: 5432
           }
         })
       })
@@ -189,7 +205,7 @@ export default class Server {
    */
   api(dbConnection) {
     // * passes dbConnection to ApolloServer to add to context
-    // apollo(dbConnection).applyMiddleware({
+    // apollo(dbConnection).appServer({
     //   app: this.app,
     //   cors: {
     //     allowedHeaders: ["Authorization", "Content-Type"],
@@ -266,25 +282,27 @@ export default class Server {
    * Serves the static bundle generated by webpack,
    * as well as the other static assets like css and html files.
    */
-  staticallyServeFiles() {
+  webServer() {
     // path to root
     const rootDir = ["..", ".."];
 
     // staticly serve styles
-    this.app.use(
-      express.static(
-        path.join(__dirname, ...rootDir, "src", "client", "main.css")
-      )
-    );
+    // this.app.use(
+    //   express.static(
+    //     path.join(__dirname, ...rootDir, "src", "client", "main.css")
+    //   )
+    // );
 
     // static file-serving middleware then send 404 for the rest (.js, .css, etc.)
     this.app
       .use(express.static(path.join(__dirname, ...rootDir)))
-      .use((req, res, next) =>
-        path.extname(req.path).length
+      .use((req, res, next) => {
+        console.log("req.path", req.path);
+
+        return path.extname(req.path).length
           ? next(new Error("404 - Not found"))
-          : next()
-      );
+          : next();
+      });
 
     // sends index.html
     this.app.use("*", (req, res) => {
@@ -295,7 +313,7 @@ export default class Server {
         });
       }
 
-      // res.sendFile(path.join(__dirname, ...rootDir, 'public', 'index.html'))
+      // res.sendFile(path.join(__dirname, ...rootDir, "public", "index.html"));
     });
   }
 }

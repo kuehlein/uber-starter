@@ -25,10 +25,21 @@
     "class-methods-use-this": "off",
     "no-bitwise": "off",
     "no-plusplus": "off",
+    "no-param-reassign": "off",
     "no-unused-expressions": "warn",
     "no-unused-vars": "warn",
     "no-use-before-define": "off",
     "sort-imports": "off",
+    "sort-keys": ["warn", "asc", { "caseSensitive": false, "natural": false }],
+    "import/extensions": [
+      "error",
+      "always",
+      {
+        "js": "never",
+        "jsx": "never",
+        "mjs": "never"
+      }
+    ],
     "import/first": "error",
     "import/ignore": [".css", ".less", ".scss"],
     "import/no-duplicates": "error",
@@ -44,5 +55,10 @@
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
     "react/sort-comp": [1],
     "simple-import-sort/sort": "warn"
+  },
+  "settings": {
+    "import/resolver": {
+      "node": { "extensions": [".js", ".mjs"] }
+    }
   }
 }

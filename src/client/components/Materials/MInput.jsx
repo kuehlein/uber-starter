@@ -76,7 +76,7 @@ MInput.defaultProps = {
 };
 
 MInput.propTypes = {
-  args: PropTypes.array(PropTypes.any),
+  args: PropTypes.arrayOf(PropTypes.any),
   autoComplete: PropTypes.oneOf(["off", "on"]),
   autoCorrect: PropTypes.oneOf(["off", "on"]),
   handleChange: PropTypes.func,
@@ -88,7 +88,7 @@ MInput.propTypes = {
   name: PropTypes.string,
   placeholder: PropTypes.string,
   shouldSpellcheck: PropTypes.bool,
-  styling: PropTypes.oneOf(["std"]), // ! Add more when start to style
+  styling: PropTypes.oneOf(["std", "invalid"]), // ! Add more when start to style
   type: PropTypes.oneOf([
     "button",
     "checkbox",

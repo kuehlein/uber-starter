@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import { Link } from "react-router-dom";
 
-import logo from "../../../../public/assets/Uber-logo.png";
+import logo from "../../../../public/assets/media/Uber-logo.png";
 import { MButton } from "../Materials";
 
 /**
@@ -13,9 +13,18 @@ import { MButton } from "../Materials";
  * @returns {*} ReactElement<any>
  */
 const Navbar = ({ handleLogout, userCookie }) => (
-  <div>
+  <div
+    style={{
+      alignItems: "center",
+      display: "flex",
+      flexDirection: "row",
+      height: "2em"
+    }}
+  >
     <h2>
-      <Link to="/">{logo}</Link>
+      <Link disabled={window.location.pathname === "/"} to="/">
+        <img style={{ height: "2em" }} src={logo} alt="logo" />
+      </Link>
     </h2>
     {!userCookie ? (
       <div>

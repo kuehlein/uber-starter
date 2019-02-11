@@ -4,7 +4,7 @@
 //   IsNotEmpty,
 //   IsUrl
 // } from "class-validator"
-import crypto from "crypto";
+import { createHash, randomBytes } from "crypto";
 import path from "path";
 import Sequelize from "sequelize";
 
@@ -21,6 +21,7 @@ const User = db.define("user", {
     type: Sequelize.STRING,
     // ! how this happen ?
     default: {
+      type: Sequelize.URL, // ! ???
       value: defaultAvatar
     }
   },
@@ -50,7 +51,7 @@ const User = db.define("user", {
 
 /**
  * -----------------------------------------------------------------------------
- * * ---------------------------- Instance Methods ----------------------------
+ * * ---------------------------- Instance Methods -----------------------------
  * -----------------------------------------------------------------------------
  */
 
@@ -90,7 +91,7 @@ User.prototype.isValidPassword = candidatePwd => {
  *
  * @returns {string}
  */
-User.generateSalt = () => crypto.randomBytes(16).toString("base64");
+User.generateSalt = () => randomBytes(16).toString("base64");
 
 /**
  * *Class Method*
@@ -102,8 +103,7 @@ User.generateSalt = () => crypto.randomBytes(16).toString("base64");
  * @returns {string}
  */
 User.encryptPassword = (plainText, salt) =>
-  crypto
-    .createHash("RSA-SHA256")
+  createHash("RSA-SHA256")
     .update(plainText)
     .update(salt)
     .digest("hex");

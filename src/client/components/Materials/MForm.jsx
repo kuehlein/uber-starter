@@ -56,8 +56,8 @@ MForm.defaultProps = {
 };
 
 MForm.propTypes = {
-  args: PropTypes.array(PropTypes.any),
-  children: PropTypes.any,
+  args: PropTypes.arrayOf(PropTypes.any),
+  children: PropTypes.any, // ! PropTypes.element
   disableSubmit: PropTypes.bool,
   handleSubmit: PropTypes.func,
   name: PropTypes.string,

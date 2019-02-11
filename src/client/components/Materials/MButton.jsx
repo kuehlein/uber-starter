@@ -51,12 +51,12 @@ MButton.defaultProps = {
 };
 
 MButton.propTypes = {
-  args: PropTypes.array(PropTypes.any),
+  args: PropTypes.arrayOf(PropTypes.any),
   disabled: PropTypes.bool,
   handleClick: PropTypes.func,
   name: PropTypes.string,
   redirect: PropTypes.string,
-  styling: PropTypes.oneOf(["std"]), // ! Add more when start to style
+  styling: PropTypes.oneOf(["std", "submit"]), // ! Add more when start to style
   type: PropTypes.oneOf(["button", "submit", "reset"])
 };
 

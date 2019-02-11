@@ -29,15 +29,11 @@ const Routes = ({ userCookie }) => {
       {/* Displays our Signup component as a fallback */}
       <Route
         path="/login"
-        render={loadable(() => (
-          <LSignupAndLogin formType="Login" />
-        ))}
+        render={() => <LSignupAndLogin formType="Login" />}
       />
       <Route
         path="/signup"
-        render={loadable(() => (
-          <LSignupAndLogin formType="Signup" />
-        ))}
+        render={() => <LSignupAndLogin formType="Signup" />}
       />
     </Switch>
   );

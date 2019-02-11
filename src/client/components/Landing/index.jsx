@@ -19,7 +19,7 @@ class Landing extends Component {
     const { count } = this.state;
 
     return (
-      <div style={{ backgroundColor: "red" }}>
+      <div style={{ backgroundColor: "cyan" }}>
         <h2>Landing page</h2>
         <h3>{count}</h3>
         <hr />

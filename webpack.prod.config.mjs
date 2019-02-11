@@ -69,13 +69,14 @@ const prodConfig = {
         include,
         loaders: "babel-loader",
         options: {
-          presets: ["@babel/preset-env"],
           plugins: [
             "@babel/plugin-proposal-class-properties",
             "@babel/plugin-proposal-object-rest-spread",
+            "@babel/plugin-syntax-dynamic-import",
             "@babel/plugin-transform-runtime", // optimizes bundling by disabling babel bloat
             "lodash" // avoids bundling unused lodash methods
-          ]
+          ],
+          presets: ["@babel/preset-env", "@babel/preset-react"]
         },
         test: /\.jsx?$/
       },

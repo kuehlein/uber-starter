@@ -48,7 +48,11 @@ const SignupForm = ({ handleChange, handleSubmit, user }) => (
           handleChange={handleChange}
           isRequired
           name="confirmEmail"
-          style={user.email === user.confirmEmail ? "std" : "invalid"}
+          styling={
+            user.email === user.confirmEmail || !user.confirmEmail
+              ? "std"
+              : "invalid"
+          }
           type="email"
         />
         <MInput
@@ -56,7 +60,11 @@ const SignupForm = ({ handleChange, handleSubmit, user }) => (
           handleChange={handleChange}
           isRequired
           name="confirmPassword" // ! password
-          styling={user.password === user.confirmPassword ? "std" : "invalid"}
+          styling={
+            user.password === user.confirmPassword || !user.confirmPassword
+              ? "std"
+              : "invalid"
+          }
           type="password"
         />
       </div>
